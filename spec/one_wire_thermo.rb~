@@ -1,0 +1,73 @@
+# coding: utf-8
+require 'ds18b20.rb'
+
+NUMBER_ATTACHED_DEVICES = 2
+DEV_0_ADDRESS = "28-0316859af1ff"
+DEV_1_ADDRESS = "28-041686425fff"
+DEV_BOGUS_ADDRESS = "28-aaaaaaaaaaaa"
+
+describe OneWireThermo do 
+   context "On initialization of the OneWireThermo class, class methods should perform as follows" do 
+      
+     it "The 'devices' class method should return an array of #{NUMBER_ATTACHED_DEVICES} devices" do
+       devs = OneWireThermo.devices
+       expect(devs.length).to be == NUMBER_ATTACHED_DEVICES
+     end
+
+     it "The devices returned by the 'devices' class method includes a device with address #{DEV_0_ADDRESS}" do
+       devs = OneWireThermo.devices
+       found = false
+       for dev in devs
+         found = true if (dev.address == DEV_0_ADDRESS)
+       end
+       expect(found).to eq true
+     end
+
+     it "The devices returned by the 'devices' class method includes a device with address #{DEV_0_ADDRESS}" do
+       devs = OneWireThermo.devices
+       found = false
+       for dev in devs
+         found = true if (dev.address == DEV_1_ADDRESS)
+       end
+       expect(found).to eq true
+     end
+
+     it "The 'get_device' class method returns a device with address #{DEV_0_ADDRESS}" do
+       dev = OneWireThermo.get_device(DEV_0_ADDRESS)
+       expect(dev).to be_instance_of OneWireThermo
+     end
+
+     it "The 'get_device' class method returns a device with address #{DEV_1_ADDRESS}" do
+       dev = OneWireThermo.get_device(DEV_1_ADDRESS)
+       expect(dev).to be_instance_of OneWireThermo
+     end
+
+     it "The 'get_device' class method returns nil with a bogus address #{DEV_BOGUS_ADDRESS}" do
+       dev = OneWireThermo.get_device(DEV_BOGUS_ADDRESS)
+       expect(dev).to be_nil
+     end
+
+   end
+
+   context "On creation of a  OneWireThermo instance, methods should perform as follows" do
+     
+     it "The 'temberature' method should read a temperature of #{DEV_0_ADDRESS}" do
+       dev = OneWireThermo.get_device(DEV_0_ADDRESS)
+       t = dev.temperature
+       expect(t).to be_between(10, 30).inclusive
+     end
+
+     it "The 'address' method should return the address of #{DEV_0_ADDRESS}" do
+       dev = OneWireThermo.get_device(DEV_0_ADDRESS)
+       t = dev.address
+       expect(t).to eq DEV_0_ADDRESS
+     end
+
+     it "The 'to_s' method should return a string describing #{DEV_0_ADDRESS}" do
+       dev = OneWireThermo.get_device(DEV_0_ADDRESS)
+       s = dev.to_s
+       expect(s).to be_instance_of String
+     end
+     
+   end
+end
